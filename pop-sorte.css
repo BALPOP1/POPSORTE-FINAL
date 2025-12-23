@@ -514,7 +514,7 @@ body { font-family: 'Inter', 'Segoe UI', Tahoma, sans-serif; }
   position: absolute;
   inset: -2px;
   border-radius: 20px;
-  padding: 4px;
+  padding: 8px;
   background: linear-gradient(
     90deg,
     #6c2bd9 0%,
@@ -1225,9 +1225,6 @@ body { font-family: 'Inter', 'Segoe UI', Tahoma, sans-serif; }
   .hero-top { align-items: flex-start; }
   .brand-title { font-size: 1.9rem; }
   .brand-logo { width: 120px; height: 120px; border-radius: 16px; }
-  .cta-stack { width: 100%; justify-content: flex-start; }
-  .prize-chip { width: 100%; justify-content: flex-start; text-align: left; }
-  .cta-button { width: 100%; justify-content: center; text-align: center; }
   .cta-scroll-trigger { width: 100%; color: #ffffff;}
   .video-section { padding: 18px 12px 22px; }
   .video-card { padding: 14px 12px 16px; }
@@ -1240,6 +1237,28 @@ body { font-family: 'Inter', 'Segoe UI', Tahoma, sans-serif; }
   .number-ball { max-width: 35px; font-size: 0.75rem; }
   .brand-title { font-size: 1.65rem; }
   .checkbox-label { font-size: 0.75rem; }
+  
+  /* Ensure consistent button sizing on very small phones */
+  .prize-chip, .cta-button {
+    padding: 10px 12px;
+    font-size: 0.75rem;
+  }
+  
+  .chip-icon {
+    font-size: 1.2rem;
+  }
+  
+  .chip-label {
+    font-size: 0.65rem;
+  }
+  
+  .chip-value {
+    font-size: 1rem;
+  }
+  
+  .cta-button .info-n1 {
+    font-size: 0.75rem;
+  }
 }
 
 /* SMALLER PHONES: Fix text overflow issues */
@@ -1265,6 +1284,28 @@ body { font-family: 'Inter', 'Segoe UI', Tahoma, sans-serif; }
   
   .info-title {
     font-size: 0.85rem;
+  }
+  
+  /* Ensure consistent button sizing on small phones */
+  .prize-chip, .cta-button {
+    padding: 11px 13px;
+    font-size: 0.78rem;
+  }
+  
+  .chip-icon {
+    font-size: 1.25rem;
+  }
+  
+  .chip-label {
+    font-size: 0.68rem;
+  }
+  
+  .chip-value {
+    font-size: 1.05rem;
+  }
+  
+  .cta-button .info-n1 {
+    font-size: 0.78rem;
   }
 }
 
@@ -1532,30 +1573,46 @@ body { font-family: 'Inter', 'Segoe UI', Tahoma, sans-serif; }
     min-height: auto;
     width: 100%;
     justify-content: center;
-    align-items: center; /* Center items vertically as well */
+    align-items: stretch; /* Ensure equal heights */
   }
   
   .prize-chip, .cta-button {
-    flex: 1; /* Make both items take equal width to help centering */
-    min-height: auto;
+    flex: 1 1 0; /* Make both items take equal width with consistent flex basis */
+    min-height: 60px; /* Consistent minimum height */
+    max-height: none;
     padding: 12px 14px;
     font-size: 0.8rem;
     display: flex;
     justify-content: center;
     align-items: center;
     text-align: center;
+    box-sizing: border-box; /* Ensure padding is included in width */
+  }
+  
+  .prize-chip {
+    text-align: center; /* Center text on mobile */
+    justify-content: center;
   }
   
   .chip-icon {
     font-size: 1.3rem;
+    flex-shrink: 0; /* Prevent icon from shrinking */
   }
   
   .chip-label {
     font-size: 0.7rem;
+    line-height: 1.2;
   }
   
   .chip-value {
     font-size: 1.1rem;
+    line-height: 1.2;
+  }
+  
+  .cta-button .info-n1 {
+    font-size: 0.8rem;
+    line-height: 1.2;
+    white-space: nowrap;
   }
   
   .cta-button .label {

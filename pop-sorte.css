@@ -488,6 +488,118 @@ body { font-family: 'Inter', 'Segoe UI', Tahoma, sans-serif; }
   100% { transform: scale(1); box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
 }
 
+/* Winners Carousel Styling */
+.winners-carousel-section {
+  background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+  padding: 20px 0;
+  border-bottom: 1px solid #e2e8f0;
+  overflow: hidden;
+}
+
+.winners-carousel-container {
+  position: relative;
+  max-width: 800px;
+  margin: 0 auto;
+  overflow: hidden;
+  border-radius: 16px;
+  background: white;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  border: 1px solid #e2e8f0;
+}
+
+.winners-carousel-track {
+  display: flex;
+  transition: transform 0.5s ease-in-out;
+  width: 100%;
+}
+
+.winner-card {
+  flex: 0 0 100%;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 12px;
+}
+
+.winner-card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 5px;
+}
+
+.winner-badge-pill {
+  background: #fef3c7;
+  color: #b45309;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-weight: 800;
+  font-size: 0.85rem;
+  border: 1px solid #fde68a;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.winner-id-text {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #6c2bd9;
+}
+
+.winner-numbers-display {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 10px;
+  background: #f8fafc;
+  border-radius: 12px;
+  width: 100%;
+}
+
+.winner-num-item {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #64748b;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.winner-num-item.match {
+  /* Inherits number-badge styles from JS */
+  width: 36px;
+  height: 36px;
+  font-size: 0.9rem;
+}
+
+.carousel-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.carousel-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #cbd5e1;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.carousel-dot.active {
+  background: #6c2bd9;
+  transform: scale(1.2);
+}
+
 /* RECHARGE CARD UPGRADE (clickable) */
 .recharge-check { margin: 16px 0; padding: 0; border: none; background: transparent; }
 .recharge-card {

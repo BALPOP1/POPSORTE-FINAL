@@ -251,7 +251,91 @@ async function fetchAndPopulateResults() {
             });
         }
 
+        // UPDATE WINNERS CAROUSEL
+        updateWinnersCarousel(winners, nums);
+
         startMarquee();
+    };
+
+    const updateWinnersCarousel = (winners, winningNums) => {
+        const carouselSection = document.getElementById('winnersCarouselSection');
+        const track = document.getElementById('winnersCarouselTrack');
+        const dotsContainer = document.getElementById('carouselDots');
+        
+        if (!carouselSection || !track || !dotsContainer) return;
+
+        if (!winners || winners.length === 0) {
+            carouselSection.style.display = 'none';
+            return;
+        }
+
+        carouselSection.style.display = 'block';
+        track.innerHTML = '';
+        dotsContainer.innerHTML = '';
+
+        winners.forEach((win, index) => {
+            const card = document.createElement('div');
+            card.className = 'winner-card';
+            
+            const winDate = (win.drawDate || '').split(' ')[0];
+            
+            let numsHTML = '';
+            win.chosenNumbers.forEach(num => {
+                const isMatch = winningNums.includes(num);
+                if (isMatch) {
+                    numsHTML += `<div class="winner-num-item match number-badge ${getBallColorClass(num)}">` +
+                                `<span class="number-text">${num.toString().padStart(2, '0')}</span></div>`;
+                } else {
+                    numsHTML += `<div class="winner-num-item">${num.toString().padStart(2, '0')}</div>`;
+                }
+            });
+
+            card.innerHTML = `
+                <div class="winner-card-header">
+                    <div class="winner-badge-pill">🏆 GANHADOR</div>
+                    <span style="color: #64748b; font-size: 0.85rem; font-weight: 600;">Sorteio: ${winDate}</span>
+                </div>
+                <div class="winner-id-text">ID DO JOGO: ${win.gameId}</div>
+                <div style="font-size: 0.9rem; color: #4b5563; font-weight: 700;">Números Escolhidos:</div>
+                <div class="winner-numbers-display">
+                    ${numsHTML}
+                </div>
+                <div style="font-size: 0.85rem; color: #10b981; font-weight: 800;">
+                    ${win.matches} ACERTOS! PARABÉNS! 🎉
+                </div>
+            `;
+            track.appendChild(card);
+
+            // Add dots
+            const dot = document.createElement('div');
+            dot.className = `carousel-dot ${index === 0 ? 'active' : ''}`;
+            dot.onclick = () => goToSlide(index);
+            dotsContainer.appendChild(dot);
+        });
+
+        // Initialize Carousel
+        let currentSlide = 0;
+        const totalSlides = winners.length;
+        
+        function goToSlide(n) {
+            currentSlide = n;
+            track.style.transform = `translateX(-${n * 100}%)`;
+            
+            // Update dots
+            const dots = dotsContainer.querySelectorAll('.carousel-dot');
+            dots.forEach((dot, idx) => {
+                dot.classList.toggle('active', idx === n);
+            });
+        }
+
+        // Auto-slide if more than 1 winner
+        if (totalSlides > 1) {
+            if (window.winnersCarouselInterval) clearInterval(window.winnersCarouselInterval);
+            window.winnersCarouselInterval = setInterval(() => {
+                currentSlide = (currentSlide + 1) % totalSlides;
+                goToSlide(currentSlide);
+            }, 5000);
+        }
     };
 
     const startMarquee = () => {

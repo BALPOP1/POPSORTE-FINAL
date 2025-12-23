@@ -296,7 +296,6 @@ async function fetchAndPopulateResults() {
                     <span style="color: #64748b; font-size: 0.85rem; font-weight: 600;">Sorteio: ${winDate}</span>
                 </div>
                 <div class="winner-id-text">ID DO JOGO: ${win.gameId}</div>
-                <div style="font-size: 0.9rem; color: #4b5563; font-weight: 700;">Números Escolhidos:</div>
                 <div class="winner-numbers-display">
                     ${numsHTML}
                 </div>

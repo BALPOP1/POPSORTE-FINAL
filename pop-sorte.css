@@ -412,7 +412,7 @@ body { font-family: 'Inter', 'Segoe UI', Tahoma, sans-serif; }
 }
 
 .marquee-content.is-animating {
-  animation: marquee-continuous 25s linear infinite;
+  animation: marquee-continuous 40s linear infinite;
 }
 
 @keyframes marquee-continuous {
@@ -513,8 +513,8 @@ body { font-family: 'Inter', 'Segoe UI', Tahoma, sans-serif; }
   content: "";
   position: absolute;
   inset: -2px;
-  border-radius: 14px;
-  padding: 2px;
+  border-radius: 20px;
+  padding: 8px;
   background: linear-gradient(
     90deg,
     #6c2bd9 0%,

@@ -1,0 +1,1158 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Admin Panel README</title>
+    <meta name="description" content="Simple guide for every admin page." />
+
+    <style>
+        :root{
+            --bg: #0b1020;
+            --panel: rgba(255,255,255,0.06);
+            --panel2: rgba(255,255,255,0.09);
+            --text: rgba(255,255,255,0.92);
+            --muted: rgba(255,255,255,0.72);
+            --muted2: rgba(255,255,255,0.58);
+            --line: rgba(255,255,255,0.12);
+            --accent: #7c5cff;
+            --accent2: #31d0aa;
+            --warn: #ffb020;
+            --bad: #ff4d6d;
+            --good: #2ee59d;
+            --shadow: 0 12px 40px rgba(0,0,0,0.38);
+            --radius: 18px;
+            --radius2: 12px;
+            --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+        }
+
+        *{ box-sizing:border-box; }
+        html, body { height: 100%; }
+        body{
+            margin:0;
+            font-family: var(--sans);
+            color: var(--text);
+            background:
+                radial-gradient(1200px 800px at 20% 0%, rgba(124,92,255,0.25), transparent 55%),
+                radial-gradient(1100px 900px at 85% 10%, rgba(49,208,170,0.18), transparent 55%),
+                radial-gradient(900px 700px at 50% 105%, rgba(255,176,32,0.10), transparent 55%),
+                linear-gradient(180deg, #070a14 0%, #0b1020 55%, #070a14 100%);
+            overflow-x:hidden;
+        }
+
+        a{ color: inherit; text-decoration: none; }
+        a:hover{ text-decoration: underline; text-underline-offset: 3px; }
+        code, pre{ font-family: var(--mono); }
+
+        .app{
+            min-height: 100%;
+            display: grid;
+            grid-template-columns: 320px 1fr;
+        }
+
+        /* Sidebar */
+        .sidebar{
+            position: sticky;
+            top:0;
+            height: 100vh;
+            padding: 22px 18px;
+            border-right: 1px solid var(--line);
+            background: rgba(0,0,0,0.22);
+            backdrop-filter: blur(14px);
+        }
+
+        .brand{
+            display:flex;
+            align-items:center;
+            gap:12px;
+            padding: 14px 12px;
+            border-radius: var(--radius);
+            background: linear-gradient(135deg, rgba(124,92,255,0.18), rgba(49,208,170,0.12));
+            border: 1px solid rgba(255,255,255,0.10);
+            box-shadow: var(--shadow);
+        }
+
+        .logo{
+            width:42px; height:42px;
+            border-radius: 14px;
+            background:
+                radial-gradient(circle at 30% 30%, rgba(255,255,255,0.28), transparent 45%),
+                linear-gradient(135deg, rgba(124,92,255,0.95), rgba(49,208,170,0.85));
+            display:grid;
+            place-items:center;
+            border: 1px solid rgba(255,255,255,0.16);
+        }
+        .logo span{
+            font-weight: 900;
+            letter-spacing: 0.5px;
+        }
+
+        .brand h1{
+            margin:0;
+            font-size: 14px;
+            letter-spacing: 0.3px;
+            line-height: 1.1;
+        }
+        .brand p{
+            margin:4px 0 0 0;
+            font-size: 12px;
+            color: var(--muted);
+            line-height: 1.2;
+        }
+
+        .side-block{
+            margin-top: 16px;
+            padding: 12px;
+            border-radius: var(--radius);
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.10);
+        }
+
+        .search{
+            display:flex;
+            gap:10px;
+            align-items:center;
+            padding: 10px 12px;
+            border-radius: 14px;
+            background: rgba(0,0,0,0.28);
+            border: 1px solid rgba(255,255,255,0.14);
+        }
+        .search input{
+            width:100%;
+            background: transparent;
+            border:0;
+            outline:0;
+            color: var(--text);
+            font-size: 13px;
+        }
+        .search kbd{
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--muted2);
+            border: 1px solid rgba(255,255,255,0.18);
+            padding: 4px 6px;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.05);
+        }
+
+        .nav{
+            margin-top: 12px;
+            display:flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .nav a{
+            display:flex;
+            gap:10px;
+            align-items:center;
+            padding: 10px 10px;
+            border-radius: 14px;
+            border: 1px solid transparent;
+            color: var(--muted);
+            transition: 160ms ease;
+            user-select: none;
+        }
+        .nav a:hover{
+            color: var(--text);
+            border-color: rgba(255,255,255,0.12);
+            background: rgba(255,255,255,0.05);
+            text-decoration: none;
+        }
+        .nav a.active{
+            color: var(--text);
+            border-color: rgba(124,92,255,0.38);
+            background: linear-gradient(135deg, rgba(124,92,255,0.20), rgba(49,208,170,0.08));
+        }
+
+        .dot{
+            width: 9px; height: 9px;
+            border-radius: 99px;
+            background: rgba(255,255,255,0.28);
+            box-shadow: 0 0 0 3px rgba(255,255,255,0.06);
+        }
+        .nav a.active .dot{
+            background: var(--accent2);
+            box-shadow: 0 0 0 3px rgba(49,208,170,0.16);
+        }
+
+        .mini{
+            margin-top: 12px;
+            padding: 12px;
+            border-radius: var(--radius);
+            border: 1px solid rgba(255,255,255,0.10);
+            background: rgba(255,255,255,0.05);
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.35;
+        }
+        .pill{
+            display:inline-flex;
+            align-items:center;
+            gap: 6px;
+            border: 1px solid rgba(255,255,255,0.16);
+            padding: 4px 8px;
+            border-radius: 999px;
+            background: rgba(0,0,0,0.22);
+            color: var(--muted);
+            font-size: 11px;
+            margin-top: 8px;
+        }
+        .pill b{ color: var(--text); }
+
+        /* Content */
+        .content{
+            padding: 26px 26px 36px;
+            max-width: 1120px;
+        }
+
+        .topbar{
+            display:flex;
+            align-items:flex-start;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 18px;
+        }
+
+        .hero{
+            padding: 18px 18px;
+            border-radius: var(--radius);
+            border: 1px solid rgba(255,255,255,0.10);
+            background: linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+            box-shadow: var(--shadow);
+        }
+        .hero h2{
+            margin:0;
+            font-size: 22px;
+            letter-spacing: 0.2px;
+        }
+        .hero p{
+            margin: 8px 0 0 0;
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.5;
+            max-width: 920px;
+        }
+        .hero .badges{
+            display:flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        .badge{
+            font-size: 12px;
+            padding: 7px 10px;
+            border-radius: 999px;
+            border: 1px solid rgba(255,255,255,0.14);
+            background: rgba(0,0,0,0.18);
+            color: var(--muted);
+        }
+        .badge strong{ color: var(--text); font-weight: 700; }
+
+        .actions{
+            display:flex;
+            gap:10px;
+            align-items:center;
+            flex-wrap: wrap;
+        }
+        .btn{
+            cursor:pointer;
+            border: 1px solid rgba(255,255,255,0.14);
+            background: rgba(0,0,0,0.28);
+            color: var(--text);
+            border-radius: 14px;
+            padding: 10px 12px;
+            font-size: 13px;
+            transition: 150ms ease;
+            user-select: none;
+        }
+        .btn:hover{
+            border-color: rgba(255,255,255,0.22);
+            background: rgba(255,255,255,0.06);
+        }
+        .btn.primary{
+            border-color: rgba(124,92,255,0.40);
+            background: linear-gradient(135deg, rgba(124,92,255,0.25), rgba(49,208,170,0.10));
+        }
+        .btn.danger{
+            border-color: rgba(255,77,109,0.45);
+            background: rgba(255,77,109,0.10);
+        }
+
+        .grid{
+            display:grid;
+            grid-template-columns: 1fr;
+            gap: 14px;
+            margin-top: 14px;
+        }
+
+        details.card{
+            border-radius: var(--radius);
+            border: 1px solid rgba(255,255,255,0.10);
+            background: rgba(255,255,255,0.05);
+            overflow:hidden;
+            box-shadow: 0 10px 28px rgba(0,0,0,0.28);
+        }
+
+        details.card[open]{
+            background: rgba(255,255,255,0.06);
+            border-color: rgba(255,255,255,0.14);
+        }
+
+        summary{
+            list-style:none;
+            cursor:pointer;
+            padding: 14px 16px;
+            display:flex;
+            align-items:center;
+            justify-content: space-between;
+            gap: 12px;
+            user-select: none;
+        }
+        summary::-webkit-details-marker{ display:none; }
+
+        .sum-left{
+            display:flex;
+            align-items:center;
+            gap:12px;
+            min-width: 0;
+        }
+        .tag{
+            font-size: 11px;
+            padding: 5px 9px;
+            border-radius: 999px;
+            border: 1px solid rgba(255,255,255,0.14);
+            background: rgba(0,0,0,0.22);
+            color: var(--muted);
+            white-space: nowrap;
+        }
+        .tag.good{ border-color: rgba(46,229,157,0.40); color: rgba(46,229,157,0.95); background: rgba(46,229,157,0.08); }
+        .tag.warn{ border-color: rgba(255,176,32,0.45); color: rgba(255,176,32,0.95); background: rgba(255,176,32,0.08); }
+        .tag.bad{ border-color: rgba(255,77,109,0.45); color: rgba(255,77,109,0.95); background: rgba(255,77,109,0.10); }
+        .tag.neutral{ border-color: rgba(124,92,255,0.40); color: rgba(180,170,255,0.95); background: rgba(124,92,255,0.10); }
+
+        .title{
+            min-width: 0;
+        }
+        .title h3{
+            margin:0;
+            font-size: 15px;
+            letter-spacing: 0.2px;
+        }
+        .title p{
+            margin: 4px 0 0 0;
+            font-size: 12px;
+            color: var(--muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 720px;
+        }
+
+        .chev{
+            width: 34px; height: 34px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.14);
+            background: rgba(0,0,0,0.18);
+            display:grid;
+            place-items:center;
+            flex: 0 0 auto;
+        }
+        details[open] .chev{
+            border-color: rgba(124,92,255,0.40);
+            background: rgba(124,92,255,0.10);
+        }
+        .chev svg{
+            transition: 170ms ease;
+            opacity: 0.9;
+        }
+        details[open] .chev svg{ transform: rotate(180deg); }
+
+        .card-body{
+            border-top: 1px solid rgba(255,255,255,0.10);
+            padding: 14px 16px 16px;
+        }
+
+        .kv{
+            display:grid;
+            grid-template-columns: 190px 1fr;
+            gap: 10px 12px;
+            padding: 12px;
+            border-radius: var(--radius2);
+            border: 1px solid rgba(255,255,255,0.10);
+            background: rgba(0,0,0,0.20);
+            margin-bottom: 12px;
+        }
+        .k{
+            color: var(--muted2);
+            font-size: 12px;
+            line-height: 1.35;
+        }
+        .v{
+            font-size: 13px;
+            line-height: 1.5;
+            color: var(--text);
+        }
+
+        .list{
+            margin: 10px 0 0 0;
+            padding-left: 18px;
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.55;
+        }
+        .list li{ margin: 4px 0; }
+
+        .note{
+            margin-top: 10px;
+            padding: 12px 12px;
+            border-radius: var(--radius2);
+            border: 1px solid rgba(255,255,255,0.10);
+            background: rgba(255,255,255,0.04);
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.5;
+        }
+        .note b{ color: var(--text); }
+
+        .mono{
+            margin-top: 10px;
+            padding: 12px;
+            border-radius: var(--radius2);
+            border: 1px solid rgba(255,255,255,0.10);
+            background: rgba(0,0,0,0.28);
+            font-family: var(--mono);
+            font-size: 12px;
+            line-height: 1.55;
+            color: rgba(255,255,255,0.86);
+            overflow:auto;
+            white-space: pre;
+        }
+
+        .footer{
+            margin-top: 16px;
+            padding: 14px 16px;
+            border-radius: var(--radius);
+            border: 1px solid rgba(255,255,255,0.10);
+            background: rgba(255,255,255,0.04);
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .hidden{ display:none !important; }
+
+        @media (max-width: 980px){
+            .app{ grid-template-columns: 1fr; }
+            .sidebar{
+                position: relative;
+                height: auto;
+                border-right: 0;
+                border-bottom: 1px solid var(--line);
+            }
+            .content{ padding: 18px; }
+            .kv{ grid-template-columns: 1fr; }
+            .title p{ max-width: 56vw; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app">
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="logo"><span>AP</span></div>
+                <div>
+                    <h1>Admin Panel README</h1>
+                    <p>Easy guide</p>
+                </div>
+            </div>
+
+            <div class="side-block">
+                <div class="search" title="Search sections and content">
+                    <span style="opacity:.85">🔎</span>
+                    <input id="searchInput" type="text" placeholder="Search: winners, auth, refresh..." autocomplete="off" />
+                    <kbd>Ctrl K</kbd>
+                </div>
+
+                <nav class="nav" id="nav">
+                    <a href="#overview" data-target="overview" class="active"><span class="dot"></span> Overview</a>
+                    <a href="#dashboard" data-target="dashboard"><span class="dot"></span> Dashboard</a>
+                    <a href="#entries" data-target="entries"><span class="dot"></span> Entries</a>
+                    <a href="#results" data-target="results"><span class="dot"></span> Results</a>
+                    <a href="#winners" data-target="winners"><span class="dot"></span> Winners</a>
+                    <a href="#reports" data-target="reports"><span class="dot"></span> Reports</a>
+                    <a href="#login" data-target="login"><span class="dot"></span> Login</a>
+                </nav>
+
+                <div class="mini">
+                    <div><b>Rule:</b> Pages only read Google Sheets. They never write.</div>
+                    <div class="pill" title="Quick flags from this README">
+                        <span>⚠</span> <b>Unknown items</b> mark things to confirm
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="content">
+            <div class="topbar">
+                <div class="hero" id="overview">
+                    <h2>Simple Admin Guide</h2>
+                    <p>
+                        This one page tells you what every admin screen does and how to use it. It reads data from Google Sheets. It never writes back. Anything unclear is marked as <b>Unknown</b> so you know to check it.
+                    </p>
+                    <div class="badges">
+                        <span class="badge"><strong>Auth:</strong> auth.js</span>
+                        <span class="badge"><strong>Data:</strong> Google Sheets CSV</span>
+                        <span class="badge"><strong>Writes:</strong> none</span>
+                        <span class="badge"><strong>Exports:</strong> CSV on your device</span>
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <button class="btn primary" id="expandAllBtn">Expand all</button>
+                    <button class="btn" id="collapseAllBtn">Collapse all</button>
+                    <button class="btn" id="copyFlowBtn" title="Copies the text-only data flow diagram">Copy data flow</button>
+                    <button class="btn danger" id="clearSearchBtn">Clear search</button>
+                </div>
+            </div>
+
+            <section class="grid" id="cards">
+
+                <!-- Overview Card -->
+                <details class="card" open data-section="overview" id="card-overview">
+                    <summary>
+                        <div class="sum-left">
+                            <span class="tag neutral">Overview</span>
+                            <div class="title">
+                                <h3>Admin Panel Overview</h3>
+                                <p>Simple map of auth, data, pages, exports</p>
+                            </div>
+                        </div>
+                        <div class="chev" aria-hidden="true">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                                <path d="M6 9l6 6 6-6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                    </summary>
+                    <div class="card-body">
+                        <div class="kv">
+                            <div class="k">What this admin is</div>
+                            <div class="v">It checks login, pulls CSV data from Google Sheets, shows pages, and lets you export CSV. It never saves back.</div>
+
+                            <div class="k">Auth</div>
+                            <div class="v"><code>auth.js</code> keeps you logged in. If you are not logged in, it sends you to <code>admin/login.html</code>.</div>
+
+                            <div class="k">Main files</div>
+                            <div class="v">
+                                <ul class="list">
+                                    <li><code>auth.js</code> checks login.</li>
+                                    <li><code>data-fetcher.js</code> gets entries.</li>
+                                    <li><code>results-fetcher.js</code> gets results.</li>
+                                    <li><code>recharge-validator.js</code> checks recharges.</li>
+                                    <li><code>validator.js</code> finds winners from entries + results.</li>
+                                </ul>
+                            </div>
+
+                            <div class="k">Writes?</div>
+                            <div class="v">No writes. Only reading and optional CSV download.</div>
+                        </div>
+
+                        <div class="note"><b>Important:</b> Bad or missing rows in the results sheet will make winners wrong. Control who edits the sheet.</div>
+
+                        <div class="mono" id="flowDiagram">User clicks Login or Refresh
+-> auth.js checks session
+-> data-fetcher.js (entries) + results-fetcher.js (results) + recharge-validator.js (recharges)
+-> validator.js finds winners
+-> pages show:
+     - Dashboard: quick stats
+     - Entries: list of tickets
+     - Results: winning numbers
+     - Winners: winners list + simple chart
+     - Reports: unknown
+-> You can download CSV to your device</div>
+                    </div>
+                </details>
+
+                <!-- Dashboard -->
+                <details class="card" data-section="dashboard" id="dashboard">
+                    <summary>
+                        <div class="sum-left">
+                            <span class="tag good">Read-only</span>
+                            <div class="title">
+                                <h3>Dashboard</h3>
+                                <p>See key numbers at a glance</p>
+                            </div>
+                        </div>
+                        <div class="chev" aria-hidden="true">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                                <path d="M6 9l6 6 6-6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                    </summary>
+                    <div class="card-body">
+                        <div class="kv">
+                            <div class="k">What it does</div>
+                            <div class="v">Shows total entries, contests, draw dates, winners, and participation.</div>
+
+                            <div class="k">Who uses it</div>
+                            <div class="v">Anyone checking health and totals.</div>
+
+                            <div class="k">Location</div>
+                            <div class="v">Sidebar → Dashboard (<code>admin/index.html</code>).</div>
+
+                            <div class="k">Inputs</div>
+                            <div class="v">None. It loads data by itself.</div>
+
+                            <div class="k">Buttons</div>
+                            <div class="v">
+                                <ul class="list">
+                                    <li><b>Refresh:</b> reload data and redraw numbers.</li>
+                                </ul>
+                            </div>
+
+                            <div class="k">How to use</div>
+                            <div class="v">
+                                <ol class="list">
+                                    <li>Open Dashboard.</li>
+                                    <li>Click Refresh.</li>
+                                    <li>Read the numbers.</li>
+                                </ol>
+                            </div>
+
+                            <div class="k">Saves data?</div>
+                            <div class="v">No. Only reads.</div>
+
+                            <div class="k">Rules</div>
+                            <div class="v">Needs internet to load Sheets. If load fails, numbers look empty.</div>
+
+                            <div class="k">Messages</div>
+                            <div class="v">Shows loading. Shows error if fetch fails.</div>
+
+                            <div class="k">Security</div>
+                            <div class="v">Login required.</div>
+                        </div>
+
+                        <div class="note">
+                            <b>Examples:</b>
+                            <ul class="list">
+                                <li>After Refresh, Total Entries goes from 1200 to 1240.</li>
+                                <li>After adding results, “Winners by Contest” updates.</li>
+                            </ul>
+                        </div>
+
+                        <div class="note">
+                            <b>Common mistakes:</b> Blank widgets mean fetch failed. Check console or click Refresh again.
+                        </div>
+                    </div>
+                </details>
+
+                <!-- Entries -->
+                <details class="card" data-section="entries" id="entries">
+                    <summary>
+                        <div class="sum-left">
+                            <span class="tag good">Read-only</span>
+                            <div class="title">
+                                <h3>Entries</h3>
+                                <p>See all tickets and filter them</p>
+                            </div>
+                        </div>
+                        <div class="chev" aria-hidden="true">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                                <path d="M6 9l6 6 6-6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                    </summary>
+                    <div class="card-body">
+                        <div class="kv">
+                            <div class="k">What it does</div>
+                            <div class="v">Shows every ticket with details.</div>
+
+                            <div class="k">Who uses it</div>
+                            <div class="v">Team members checking player activity.</div>
+
+                            <div class="k">Location</div>
+                            <div class="v">Sidebar → Entries (<code>admin/pages/entries.html</code>).</div>
+
+                            <div class="k">Filters</div>
+                            <div class="v">
+                                Contest, Draw Date, WhatsApp search, maybe Prize filters.
+                                <span class="tag warn" style="margin-left:8px;">Unknown</span>
+                            </div>
+
+                            <div class="k">Buttons</div>
+                            <div class="v">
+                                <ul class="list">
+                                    <li><b>Refresh:</b> reload entries.</li>
+                                    <li><b>Filters:</b> filter instantly.</li>
+                                    <li><b>Export:</b> maybe exports filtered rows (confirm).</li>
+                                </ul>
+                            </div>
+
+                            <div class="k">How to use</div>
+                            <div class="v">
+                                <ol class="list">
+                                    <li>Open Entries.</li>
+                                    <li>Use filters.</li>
+                                    <li>Read rows or export.</li>
+                                </ol>
+                            </div>
+
+                            <div class="k">Saves data?</div>
+                            <div class="v">No. Only reads entries sheet.</div>
+
+                            <div class="k">Rules</div>
+                            <div class="v">Filters need good dates. Bad date format can hide rows.</div>
+
+                            <div class="k">Messages</div>
+                            <div class="v">Loading and error banners.</div>
+
+                            <div class="k">Security</div>
+                            <div class="v">Login required. Export may include WhatsApp numbers.</div>
+                        </div>
+
+                        <div class="note">
+                            <b>Examples:</b>
+                            <ul class="list">
+                                <li>Filter by contest 2001 to see its tickets.</li>
+                                <li>Search a WhatsApp number to see all tickets from that person.</li>
+                            </ul>
+                        </div>
+
+                        <div class="note">
+                            <b>Troubleshooting:</b> Empty table? Loosen filters or fix date values in the sheet.
+                        </div>
+                    </div>
+                </details>
+
+                <!-- Results -->
+                <details class="card" data-section="results" id="results">
+                    <summary>
+                        <div class="sum-left">
+                            <span class="tag good">Read-only</span>
+                            <div class="title">
+                                <h3>Results</h3>
+                                <p>Shows winning numbers for each contest</p>
+                            </div>
+                        </div>
+                        <div class="chev" aria-hidden="true">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                                <path d="M6 9l6 6 6-6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                    </summary>
+                    <div class="card-body">
+                        <div class="kv">
+                            <div class="k">What it does</div>
+                            <div class="v">Lists contest results (winning numbers).</div>
+
+                            <div class="k">Who uses it</div>
+                            <div class="v">Team checking correct outcomes.</div>
+
+                            <div class="k">Location</div>
+                            <div class="v">Sidebar → Results (<code>admin/pages/results.html</code>).</div>
+
+                            <div class="k">Inputs</div>
+                            <div class="v">Pulls from Google Sheet (<code>gid=300277644</code>). Any manual fields are unknown.</div>
+
+                            <div class="k">Buttons</div>
+                            <div class="v">
+                                <ul class="list">
+                                    <li><b>Refresh:</b> reload results.</li>
+                                    <li>Others: <b>Unknown</b>.</li>
+                                </ul>
+                            </div>
+
+                            <div class="k">How to use</div>
+                            <div class="v">
+                                <ol class="list">
+                                    <li>Open Results.</li>
+                                    <li>Click Refresh.</li>
+                                    <li>Check contests, dates, numbers.</li>
+                                </ol>
+                            </div>
+
+                            <div class="k">Saves data?</div>
+                            <div class="v">No. Read-only.</div>
+
+                            <div class="k">Rules</div>
+                            <div class="v">If results are missing, winners cannot be found. Dates use <code>yyyy-mm-dd</code>.</div>
+
+                            <div class="k">Messages</div>
+                            <div class="v">Error banner if fetch fails.</div>
+
+                            <div class="k">Security</div>
+                            <div class="v">Login required. Wrong sheet data = wrong winners.</div>
+                        </div>
+
+                        <div class="note">
+                            <b>Examples:</b>
+                            <ul class="list">
+                                <li>Add winning numbers for 2025-12-18 in the sheet, then Refresh to see them.</li>
+                                <li>Check contest 1234 shows five numbers and the right date.</li>
+                            </ul>
+                        </div>
+
+                        <div class="note">
+                            <b>Troubleshooting:</b> If it fails, check date formats and required columns. Fix the sheet, then Refresh.
+                        </div>
+                    </div>
+                </details>
+
+                <!-- Winners -->
+                <details class="card" data-section="winners" id="winners">
+                    <summary>
+                        <div class="sum-left">
+                            <span class="tag neutral">Validation</span>
+                            <div class="title">
+                                <h3>Winners</h3>
+                                <p>Find winners, filter, export, compare today vs yesterday</p>
+                            </div>
+                        </div>
+                        <div class="chev" aria-hidden="true">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                                <path d="M6 9l6 6 6-6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                    </summary>
+                    <div class="card-body">
+                        <div class="kv">
+                            <div class="k">What it does</div>
+                            <div class="v">Matches entries with results, shows winners, exports CSV, and shows unique ticket creators today vs yesterday.</div>
+
+                            <div class="k">Who uses it</div>
+                            <div class="v">Team handling payouts and quick checks.</div>
+
+                            <div class="k">Location</div>
+                            <div class="v">Sidebar → Winners (<code>admin/pages/winners.html</code>).</div>
+
+                            <div class="k">Filters</div>
+                            <div class="v">Contest, Draw Date, Prize Level, WhatsApp search.</div>
+
+                            <div class="k">Buttons</div>
+                            <div class="v">
+                                <ul class="list">
+                                    <li><b>Refresh / Refresh (Summary):</b> get fresh data and re-check winners.</li>
+                                    <li><b>Reload Winners:</b> re-check winners with filters.</li>
+                                    <li><b>Export Winners:</b> download CSV for what you see.</li>
+                                    <li><b>Clear Filters:</b> reset all filters.</li>
+                                </ul>
+                            </div>
+
+                            <div class="k">How to use</div>
+                            <div class="v">
+                                <ol class="list">
+                                    <li>Open Winners.</li>
+                                    <li>Click Refresh or Reload Winners.</li>
+                                    <li>Apply filters.</li>
+                                    <li>Read the table and summary.</li>
+                                    <li>Export if needed.</li>
+                                    <li>See today vs yesterday unique creators in the chart.</li>
+                                </ol>
+                            </div>
+
+                            <div class="k">Saves data?</div>
+                            <div class="v">No. Winners are computed in the browser. Export is just a download.</div>
+
+                            <div class="k">Rules</div>
+                            <div class="v">
+                                <ul class="list">
+                                    <li>Needs results. If missing, shows “No Results Configured.”</li>
+                                    <li>Best matching entries win. Ties split prize.</li>
+                                    <li>Unique creators chart counts unique <code>gameId</code> per day. Shows only today vs yesterday.</li>
+                                    <li>Dates must parse (ISO or <code>yyyy-mm-dd</code>).</li>
+                                </ul>
+                            </div>
+
+                            <div class="k">Messages</div>
+                            <div class="v">Error on fetch/validation issues. “No Winners Found” if none. “No Results Configured” if results are missing.</div>
+
+                            <div class="k">Security</div>
+                            <div class="v">Login required. Exports may show WhatsApp numbers.</div>
+                        </div>
+
+                        <div class="note">
+                            <b>Examples:</b>
+                            <ul class="list">
+                                <li>Set Prize Level = 4 to see 4-hit ; Export gives that CSV.</li>
+                                <li>Chart can show 10 vs 7 unique creators today vs yesterday.</li>
+                            </ul>
+                        </div>
+
+                        <div class="note">
+                            <b>Troubleshooting:</b> Empty table? Filters too strict or results missing. Chart 0/0? No entries today/yesterday or bad dates.
+                        </div>
+                    </div>
+                </details>
+
+                <!-- Reports -->
+                <details class="card" data-section="reports" id="reports">
+                    <summary>
+                        <div class="sum-left">
+                            <span class="tag warn">Unknown</span>
+                            <div class="title">
+                                <h3>Reports</h3>
+                                <p>Reporting page (details unknown)</p>
+                            </div>
+                        </div>
+                        <div class="chev" aria-hidden="true">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                                <path d="M6 9l6 6 6-6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                    </summary>
+                    <div class="card-body">
+                        <div class="kv">
+                            <div class="k">What it does</div>
+                            <div class="v">Reports. <b>Unknown</b>.</div>
+
+                            <div class="k">Who uses it</div>
+                            <div class="v">Likely ops/analysts. <b>Unknown</b>.</div>
+
+                            <div class="k">Location</div>
+                            <div class="v">Sidebar → Reports (<code>admin/pages/reports.html</code>).</div>
+
+                            <div class="k">Inputs</div>
+                            <div class="v">Unknown.</div>
+
+                            <div class="k">Buttons</div>
+                            <div class="v">Unknown.</div>
+
+                            <div class="k">How to use</div>
+                            <div class="v">Unknown.</div>
+
+                            <div class="k">Saves data?</div>
+                            <div class="v">Unknown.</div>
+
+                            <div class="k">Rules</div>
+                            <div class="v">Unknown.</div>
+
+                            <div class="k">Security</div>
+                            <div class="v">Login required.</div>
+                        </div>
+
+                        <div class="note">
+                            <b>Please confirm:</b>
+                            <ul class="list">
+                                <li>Which reports you see (daily, contest, prize, agent, etc.).</li>
+                                <li>What filters exist.</li>
+                                <li>What exports exist.</li>
+                                <li>Which sheet or CSV it reads.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </details>
+
+                <!-- Login -->
+                <details class="card" data-section="login" id="login">
+                    <summary>
+                        <div class="sum-left">
+                            <span class="tag bad">Security</span>
+                            <div class="title">
+                                <h3>Login</h3>
+                                <p>Check credentials and start a 12-hour session</p>
+                            </div>
+                        </div>
+                        <div class="chev" aria-hidden="true">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                                <path d="M6 9l6 6 6-6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                    </summary>
+                    <div class="card-body">
+                        <div class="kv">
+                            <div class="k">What it does</div>
+                            <div class="v">Checks your account and password, then keeps you logged in for 12 hours.</div>
+
+                            <div class="k">Who uses it</div>
+                            <div class="v">Admins with valid credentials in the auth sheet.</div>
+
+                            <div class="k">Location</div>
+                            <div class="v"><code>admin/login.html</code> (redirect if not logged in).</div>
+
+                            <div class="k">Inputs</div>
+                            <div class="v">Account and password. Checked against <code>AUTH_SHEET_CSV_URL</code> in <code>auth.js</code>.</div>
+
+                            <div class="k">Buttons</div>
+                            <div class="v">Login/Submit. On success, saves session and redirects.</div>
+
+                            <div class="k">How to use</div>
+                            <div class="v">
+                                <ol class="list">
+                                    <li>Open login.</li>
+                                    <li>Enter account and password.</li>
+                                    <li>Submit.</li>
+                                    <li>On success, you go to dashboard and stay logged in for 12 hours.</li>
+                                </ol>
+                            </div>
+
+                            <div class="k">Saves data?</div>
+                            <div class="v">Stores session in <code>sessionStorage</code> under <code>ps_admin_session</code> with <code>{ account, expiresAt }</code>.</div>
+
+                            <div class="k">Rules</div>
+                            <div class="v">Session expires after 12 hours. Expired session sends you to login.</div>
+
+                            <div class="k">Messages</div>
+                            <div class="v">Shows error if login fails. Redirects on success.</div>
+
+                            <div class="k">Security</div>
+                            <div class="v">Protect the auth sheet. Clear session on shared devices.</div>
+                        </div>
+
+                        <div class="note">
+                            <b>Examples:</b>
+                            <ul class="list">
+                                <li>Right password: you go to dashboard, session saved.</li>
+                                <li>Wrong password: error, you stay on login.</li>
+                            </ul>
+                        </div>
+
+                        <div class="note">
+                            <b>Troubleshooting:</b> Looping redirects? Clear sessionStorage and check <code>AUTH_SHEET_CSV_URL</code>.
+                        </div>
+
+                        <div class="mono">sessionStorage key: ps_admin_session
+payload:
+{
+    "account": "admin_user",
+    "expiresAt": 1760000000000
+}</div>
+                    </div>
+                </details>
+
+            </section>
+
+            <div class="footer">
+                <b>Tip:</b> Want brand colors or Portuguese/English? Tell me the brand, main color, and language, and I will restyle this page without changing its structure.
+            </div>
+        </main>
+    </div>
+
+    <script>
+        (function () {
+            const nav = document.getElementById("nav");
+            const links = Array.from(nav.querySelectorAll("a[data-target]"));
+            const cards = Array.from(document.querySelectorAll("details.card"));
+            const searchInput = document.getElementById("searchInput");
+            const expandAllBtn = document.getElementById("expandAllBtn");
+            const collapseAllBtn = document.getElementById("collapseAllBtn");
+            const clearSearchBtn = document.getElementById("clearSearchBtn");
+            const copyFlowBtn = document.getElementById("copyFlowBtn");
+            const flowDiagram = document.getElementById("flowDiagram");
+
+            function setActive(targetId) {
+                links.forEach(a => a.classList.toggle("active", a.dataset.target === targetId));
+            }
+
+            function scrollToId(id) {
+                const el = document.getElementById(id);
+                if (!el) return;
+                const y = el.getBoundingClientRect().top + window.scrollY - 14;
+                window.scrollTo({ top: y, behavior: "smooth" });
+            }
+
+            links.forEach(a => {
+                a.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    const id = a.dataset.target;
+                    if (id === "overview") {
+                        scrollToId("overview");
+                        setActive("overview");
+                        return;
+                    }
+                    scrollToId(id);
+                    setActive(id);
+                    const card = document.getElementById(id);
+                    if (card && card.tagName.toLowerCase() === "details") card.open = true;
+                });
+            });
+
+            const sectionTargets = [
+                document.getElementById("overview"),
+                ...cards.map(c => c)
+            ].filter(Boolean);
+
+            const io = new IntersectionObserver((entries) => {
+                const visible = entries
+                    .filter(e => e.isIntersecting)
+                    .sort((a,b) => b.intersectionRatio - a.intersectionRatio)[0];
+                if (!visible) return;
+
+                const id = visible.target.id;
+                if (id === "card-overview") setActive("overview");
+                else if (id) setActive(id);
+            }, { root: null, threshold: [0.15, 0.22, 0.35] });
+
+            sectionTargets.forEach(el => io.observe(el));
+
+            function normalize(s) {
+                return (s || "").toLowerCase().replace(/\s+/g, " ").trim();
+            }
+
+            function applySearch() {
+                const q = normalize(searchInput.value);
+                if (!q) {
+                    cards.forEach(c => c.classList.remove("hidden"));
+                    return;
+                }
+                cards.forEach(card => {
+                    const text = normalize(card.innerText);
+                    const match = text.includes(q);
+                    card.classList.toggle("hidden", !match);
+                    if (match) card.open = true;
+                });
+            }
+
+            searchInput.addEventListener("input", applySearch);
+
+            clearSearchBtn.addEventListener("click", () => {
+                searchInput.value = "";
+                applySearch();
+                searchInput.focus();
+            });
+
+            window.addEventListener("keydown", (e) => {
+                const isMac = navigator.platform.toUpperCase().includes("MAC");
+                const mod = isMac ? e.metaKey : e.ctrlKey;
+                if (mod && e.key.toLowerCase() === "k") {
+                    e.preventDefault();
+                    searchInput.focus();
+                }
+            });
+
+            expandAllBtn.addEventListener("click", () => {
+                cards.forEach(c => c.open = true);
+                const firstVisible = cards.find(c => !c.classList.contains("hidden"));
+                if (firstVisible) scrollToId(firstVisible.id);
+            });
+
+            collapseAllBtn.addEventListener("click", () => {
+                cards.forEach(c => c.open = false);
+                scrollToId("overview");
+                setActive("overview");
+            });
+
+            copyFlowBtn.addEventListener("click", async () => {
+                const text = flowDiagram ? flowDiagram.textContent : "";
+                try {
+                    await navigator.clipboard.writeText(text.trim());
+                    copyFlowBtn.textContent = "Copied";
+                    setTimeout(() => copyFlowBtn.textContent = "Copy data flow", 900);
+                } catch {
+                    const ta = document.createElement("textarea");
+                    ta.value = text.trim();
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand("copy");
+                    document.body.removeChild(ta);
+                    copyFlowBtn.textContent = "Copied";
+                    setTimeout(() => copyFlowBtn.textContent = "Copy data flow", 900);
+                }
+            });
+
+            applySearch();
+        })();
+    </script>
+</body>
+</html>

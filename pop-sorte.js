@@ -321,17 +321,18 @@ async function fetchAndPopulateResults() {
                 const allEntries = [];
                 for (let i = 1; i < lines.length; i++) {
                     const row = parseCSVLine(lines[i]);
-                    if (row.length >= 6) {
+                    if (row.length >= 8) {
                         allEntries.push({
                             gameId: row[1],
                             chosenNumbers: (row[3] || '').split(',').map(n => parseInt(n.trim())).filter(n => !isNaN(n)),
                             drawDate: row[4],
-                            contest: String(row[5] || '').trim()
+                            contest: String(row[5] || '').trim(),
+                            status: String(row[7] || '').trim().toUpperCase()
                         });
                     }
                 }
 
-                // Filter winners for the latest contest (2+ matches)
+                // Filter winners for the latest contest (2+ matches) AND MUST BE VALID
                 if (allEntries.length > 0) {
                     const winNums = latestResult.numbers || [];
                     const targetContest = String(latestResult.drawNumber || latestResult.contest || '').trim().replace('#', '');
@@ -340,10 +341,12 @@ async function fetchAndPopulateResults() {
 
                     const possibleWinners = allEntries.filter(e => {
                         const entryContest = String(e.contest || '').trim().replace('#', '');
-                        return entryContest === targetContest;
+                        const isContestMatch = entryContest === targetContest;
+                        const isValidStatus = e.status === 'VALID' || e.status === 'VALIDADO';
+                        return isContestMatch && isValidStatus;
                     });
                     
-                    console.log(`Found ${possibleWinners.length} possible entries for contest ${targetContest}`);
+                    console.log(`Found ${possibleWinners.length} VALID entries for contest ${targetContest}`);
                     
                     const calculatedWinners = possibleWinners.map(e => {
                         const matches = e.chosenNumbers.filter(n => winNums.includes(n)).length;

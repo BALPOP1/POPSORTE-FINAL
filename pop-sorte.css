@@ -1255,10 +1255,6 @@ body { font-family: 'Inter', 'Segoe UI', Tahoma, sans-serif; }
   .chip-value {
     font-size: 1rem;
   }
-  
-  .cta-button .info-n1 {
-    font-size: 0.75rem;
-  }
 }
 
 /* SMALLER PHONES: Fix text overflow issues */
@@ -1302,10 +1298,6 @@ body { font-family: 'Inter', 'Segoe UI', Tahoma, sans-serif; }
   
   .chip-value {
     font-size: 1.05rem;
-  }
-  
-  .cta-button .info-n1 {
-    font-size: 0.78rem;
   }
 }
 
@@ -1607,12 +1599,6 @@ body { font-family: 'Inter', 'Segoe UI', Tahoma, sans-serif; }
   .chip-value {
     font-size: 1.1rem;
     line-height: 1.2;
-  }
-  
-  .cta-button .info-n1 {
-    font-size: 0.8rem;
-    line-height: 1.2;
-    white-space: nowrap;
   }
   
   .cta-button .label {

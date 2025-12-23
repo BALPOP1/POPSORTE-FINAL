@@ -222,11 +222,30 @@ async function fetchAndPopulateResults() {
 
                 const gameIdShort = win.gameId;
                 const winDate = (win.drawDate || '').split(' ')[0];
-                const winNums = win.chosenNumbers.join(',');
                 
-                winTag.innerHTML = `<span style="font-weight:800; color:#6c2bd9;">ID: ${gameIdShort}</span> ` +
-                                 `<span style="opacity:0.7; font-size:0.75rem;">(${winDate})</span> ` +
-                                 `<span style="color:#b45309; font-weight:700;">[${winNums}]</span>`;
+                // Construct inner HTML with Game ID and Date
+                let innerHTML = `<span style="font-weight:800; color:#6c2bd9;">ID: ${gameIdShort}</span> ` +
+                               `<span style="opacity:0.7; font-size:0.75rem;">(${winDate})</span> ` +
+                               `<span style="color:#b45309; font-weight:700;">[</span>`;
+                
+                // Add numbers with conditional ball badge styling
+                win.chosenNumbers.forEach((num, idx) => {
+                    const isMatch = nums.includes(num);
+                    if (isMatch) {
+                        innerHTML += `<div class="number-badge ${getBallColorClass(num)}" style="width:22px; height:22px; font-size:0.65rem; margin:0 2px;">` +
+                                     `<span class="number-text">${num.toString().padStart(2, '0')}</span>` +
+                                     `</div>`;
+                    } else {
+                        innerHTML += `<span style="margin:0 2px;">${num.toString().padStart(2, '0')}</span>`;
+                    }
+                    
+                    if (idx < win.chosenNumbers.length - 1) {
+                        innerHTML += `<span style="opacity:0.5;">,</span>`;
+                    }
+                });
+                
+                innerHTML += `<span style="color:#b45309; font-weight:700;">]</span>`;
+                winTag.innerHTML = innerHTML;
                 
                 marqueeBalls.appendChild(winTag);
             });

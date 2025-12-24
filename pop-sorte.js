@@ -426,27 +426,44 @@ async function fetchAndPopulateResults() {
                 }
 
                 // Filter winners for the latest contest (3+ matches) AND MUST BE VALID
+                // IMPORTANT: Entries can ONLY match results from their exact contest number (e.g., contest 6909 entries only match contest 6909 results)
                 if (allEntries.length > 0) {
                     const winNums = latestResult.numbers || [];
-                    const targetContest = String(latestResult.drawNumber || latestResult.contest || '').trim().replace('#', '');
+                    const targetContest = String(latestResult.drawNumber || latestResult.contest || '').trim().replace('#', '').replace(/\s+/g, '');
+                    
+                    if (!targetContest) {
+                        console.warn('No target contest number found in latest result');
+                        updateAndAnimate(latestResult, []);
+                        return;
+                    }
                     
                     console.log(`Checking winners for contest ${targetContest} against numbers:`, winNums);
 
+                    // STRICT CONTEST MATCHING: Only entries registered for this exact contest can win
                     const possibleWinners = allEntries.filter(e => {
-                        const entryContest = String(e.contest || '').trim().replace('#', '');
-                        const isContestMatch = entryContest === targetContest;
+                        const entryContest = String(e.contest || '').trim().replace('#', '').replace(/\s+/g, '');
+                        
+                        // Exact contest number match required (e.g., "6909" must match "6909", not "6908" or "6910")
+                        const isContestMatch = entryContest === targetContest && entryContest !== '';
+                        
+                        // Must have VALID status
                         const isValidStatus = e.status === 'VALID' || e.status === 'VALIDADO';
+                        
+                        if (isContestMatch && isValidStatus) {
+                            console.log(`Valid entry found: Game ID ${e.gameId}, Contest ${entryContest}, Matches contest ${targetContest}`);
+                        }
+                        
                         return isContestMatch && isValidStatus;
                     });
                     
-                    console.log(`Found ${possibleWinners.length} VALID entries for contest ${targetContest}`);
+                    console.log(`Found ${possibleWinners.length} VALID entries for contest ${targetContest} (strict contest matching enforced)`);
                     
                     const calculatedWinners = possibleWinners.map(e => {
                         const matches = e.chosenNumbers.filter(n => winNums.includes(n)).length;
                         return { ...e, matches };
                     }).filter(e => e.matches >= 3);
 
-                    console.log(`Found ${calculatedWinners.length} winners with 3+ matches`);
+                    console.log(`Found ${calculatedWinners.length} winners with 3+ matches for contest ${targetContest}`);
 
                     // Sort by matches desc and take top 5
                     winners = calculatedWinners.sort((a, b) => b.matches - a.matches).slice(0, 5);

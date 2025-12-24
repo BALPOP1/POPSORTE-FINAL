@@ -219,6 +219,8 @@ async function fetchAndPopulateResults() {
                 winTag.style.fontSize = '0.85rem';
                 winTag.style.marginRight = '12px';
                 winTag.style.color = '#1e293b';
+                winTag.style.cursor = 'pointer';
+                winTag.title = 'Clique para ver detalhes do ganhador';
 
                 const gameIdShort = win.gameId;
                 const winDate = (win.drawDate || '').split(' ')[0];
@@ -246,6 +248,14 @@ async function fetchAndPopulateResults() {
                 
                 innerHTML += `<span style="color:#b45309; font-weight:700;">]</span>`;
                 winTag.innerHTML = innerHTML;
+                
+                // Add click event to scroll to winners carousel section
+                winTag.addEventListener('click', () => {
+                    const carouselSection = document.getElementById('winnersCarouselSection');
+                    if (carouselSection) {
+                        carouselSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
                 
                 marqueeBalls.appendChild(winTag);
             });
@@ -415,7 +425,7 @@ async function fetchAndPopulateResults() {
                     }
                 }
 
-                // Filter winners for the latest contest (2+ matches) AND MUST BE VALID
+                // Filter winners for the latest contest (3+ matches) AND MUST BE VALID
                 if (allEntries.length > 0) {
                     const winNums = latestResult.numbers || [];
                     const targetContest = String(latestResult.drawNumber || latestResult.contest || '').trim().replace('#', '');
@@ -434,9 +444,9 @@ async function fetchAndPopulateResults() {
                     const calculatedWinners = possibleWinners.map(e => {
                         const matches = e.chosenNumbers.filter(n => winNums.includes(n)).length;
                         return { ...e, matches };
-                    }).filter(e => e.matches >= 2);
+                    }).filter(e => e.matches >= 3);
 
-                    console.log(`Found ${calculatedWinners.length} winners with 2+ matches`);
+                    console.log(`Found ${calculatedWinners.length} winners with 3+ matches`);
 
                     // Sort by matches desc and take top 5
                     winners = calculatedWinners.sort((a, b) => b.matches - a.matches).slice(0, 5);
